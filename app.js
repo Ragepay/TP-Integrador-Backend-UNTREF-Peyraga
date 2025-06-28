@@ -1,5 +1,7 @@
 import express from "express";
 import morgan from "morgan";
+import errorHandler from "./src/middlewares/errorHandler.mid.js";
+import pathHandler from "./src/middlewares/pathHandler.mid.js";
 
 // Importar dotenv para leer variables de entorno.
 process.loadEnvFile();
@@ -16,10 +18,14 @@ app.use(express.json()); // Parsea JSON del body
 app.use(express.urlencoded({ extended: true })); // Parsea datos de formularios
 app.use(morgan("dev")); // Logger para ver las peticiones en consola.
 
-// RUTA DE EJEMPLO
+// Rutas
 app.get("/", (req, res) => {
     res.send("¡Servidor funcionando correctamente!");
 });
+
+// Middleware de manejo de errores.
+app.use(errorHandler);
+app.use(pathHandler); // Debe ser el ultimo, porque recibe rutas no existentes.
 
 // Funcion de ejecucion del servidor.
 async function ready() {

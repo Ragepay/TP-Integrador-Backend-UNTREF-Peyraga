@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"Configuración del archivo app.js.\" && git push"
+		"push": "git add . && git commit -m \"Agregacion del middlewares de manejo de erores y rutas no existentes.\" && git push"
 	},
 	"dependencies": {
 		"express": "^5.1.0",
