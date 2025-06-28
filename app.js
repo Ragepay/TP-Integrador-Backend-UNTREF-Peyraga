@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import errorHandler from "./src/middlewares/errorHandler.mid.js";
 import pathHandler from "./src/middlewares/pathHandler.mid.js";
+import { dbConnect, dbDisconnect } from "./src/utils/database.js";
 
 // Importar dotenv para leer variables de entorno.
 process.loadEnvFile();
@@ -29,6 +30,14 @@ app.use(pathHandler); // Debe ser el ultimo, porque recibe rutas no existentes.
 
 // Funcion de ejecucion del servidor.
 async function ready() {
+    await dbConnect();
     console.log(`MODE: ${MODE} | PORT: ${PORT}`);
     console.log(`http://localhost:${PORT}`);
 }
+
+// Manejo de la señal SIGINT (Ctrl+C) para cerrar la conexion a la base de datos.
+process.on("SIGINT", async () => {
+    console.log("🔌 Desconectado de MongoDB. Adiós.");
+    await dbDisconnect();
+    process.exit(0);
+});
