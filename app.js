@@ -1,10 +1,11 @@
 import express from "express";
 import morgan from "morgan";
+import indexRouter from "./src/routes/index.route.js";
 import errorHandler from "./src/middlewares/errorHandler.mid.js";
 import pathHandler from "./src/middlewares/pathHandler.mid.js";
-import { dbConnect, dbDisconnect } from "./src/utils/database.js";
+import { dbConnect, dbDisconnect } from "./src/utils/mongoConnect.util.js";
 
-// Importar dotenv para leer variables de entorno.
+// Cargar variables de entorno.
 process.loadEnvFile();
 // Configuracion de variables de entorno.
 const { PORT, MODE } = process.env;
@@ -20,9 +21,7 @@ app.use(express.urlencoded({ extended: true })); // Parsea datos de formularios
 app.use(morgan("dev")); // Logger para ver las peticiones en consola.
 
 // Rutas
-app.get("/", (req, res) => {
-    res.send("¡Servidor funcionando correctamente!");
-});
+app.use("/api", indexRouter);
 
 // Middleware de manejo de errores.
 app.use(errorHandler);

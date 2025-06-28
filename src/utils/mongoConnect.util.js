@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
+// Cargar variables de entorno
 process.loadEnvFile();
+// Configuracion de variables de entorno.
 const { MONGO } = process.env;
 
-
+// Conectarse a la base de datos MongoDB.
 async function dbConnect() {
     try {
         await mongoose.connect(MONGO);
@@ -13,6 +15,7 @@ async function dbConnect() {
     }
 }
 
+// Desconectarse de la base de datos MongoDB.
 async function dbDisconnect() {
     try {
         await mongoose.disconnect(MONGO);
@@ -22,5 +25,5 @@ async function dbDisconnect() {
         return null;
     }
 }
-
+// Exportar las funciones de conexión y desconexión.
 export { dbConnect, dbDisconnect };
