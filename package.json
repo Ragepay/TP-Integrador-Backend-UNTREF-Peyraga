@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"feat: Utilización de Express Router para el crud de products y usuarios.\" && git push"
+		"push": "git add . && git commit -m \"feat: Creacion de los Modelos User y Product.\" && git push"
 	},
 	"dependencies": {
 		"express": "^5.1.0",
