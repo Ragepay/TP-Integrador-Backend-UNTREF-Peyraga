@@ -3,6 +3,81 @@ import Product from "../models/product.model.js";
 import { readFileSync } from "fs";
 const router = Router();
 
+//--------------------ENDPOINTS ADICIONALES-----------------------//
+// Endpoint para buscar que el nombre contenga el query params "q".
+router.get("/buscar", async (req, res) => {
+    try {
+        // Obtencion del query.
+        const { q } = req.query;
+        // Validacion del query.
+        if (!q || q.trim() === '') {
+            return res.status(400).json({ mensaje: "Falta el parámetro de búsqueda 'q'." });
+        }
+        // Consulta de la existencia del producto.
+        const productos = await Product.find({
+            nombre: { $regex: q, $options: 'i' } // Búsqueda insensible a mayúsculas
+        });
+        // Respuesta si no existe tal producto.
+        if (productos.length === 0) {
+            return res.status(404).json({ mensaje: "No se encontraron los productos." });
+        }
+        // Mensaje y respuesta exitosa.
+        res.status(200).json({ mensaje: "Productos encontrados correctamente.", productos });
+    } catch (error) {
+        console.error("Error al buscar productos:", error);
+        res.status(500).json({ mensaje: "Error interno del servidor." });
+    }
+});
+
+// Endpoint para buscar que contenga por categoria.
+router.get("/categoria/:nombre", async (req, res) => {
+    try {
+        // Obtencion del parametro.
+        const { nombre } = req.params;
+        // Consulta de la existencia del producto.
+        const productos = await Product.find({
+            categoria: { $regex: nombre, $options: 'i' }
+        });
+        // Respuesta si no existe tal producto.
+        if (productos.length === 0) {
+            return res.status(404).json({ mensaje: "No se encontraron los productos." });
+        }
+        // Mensaje y respuesta exitosa.
+        res.status(200).json({ mensaje: "Productos encontrados correctamente.", productos });
+    } catch (error) {
+        console.error("Error al buscar productos:", error);
+        res.status(500).json({ mensaje: "Error interno del servidor." });
+    }
+});
+
+// Endpoint para buscar por query params.
+router.get("/precio/:min-:max", async (req, res) => {
+    res.send("Product route is working!");
+});
+
+// Endpoint para buscar por query params.
+router.post("/masivo", async (req, res) => {
+    res.send("Product route is working!");
+});
+
+/* -------Hehco por mi-------- */
+// Endpoint para subir un archivo json con productos a la BBDD internamente del servidor.
+router.post("/upload", async (req, res) => {
+    try {
+        // Se verifica si el archivo existe y se lee su contenido.
+        const productsComputacion = await JSON.parse(readFileSync("./src/data/computacion.json", "utf-8"));
+        // Se inserta el contenido del archivo en la base de datos.
+        await Product.insertMany(productsComputacion);
+        // Mensaje y respuesta exitosa.
+        res.status(201).json({ mensaje: "Productos subidos/creados correctamente." });
+    } catch (error) {
+        console.error("Error al subir los productos:", error);
+        return res.status(500).json({ error: "Error al subir el archivo a la BBDD." });
+    }
+});
+//--------------------ENDPOINTS ADICIONALES-----------------------//
+
+
 //--------------------CRUD BASICO DE PRODUCTOS--------------------//
 // Endpoint para ver todos los productos.
 router.get("/", async (req, res) => {
@@ -102,45 +177,5 @@ router.delete("/:codigo", async (req, res) => {
     }
 });
 //--------------------CRUD BASICO DE PRODUCTOS--------------------//
-
-
-
-//--------------------ENDPOINTS ADICIONALES-----------------------//
-// Endpoint para buscar por query params.
-router.get("/buscar", async (req, res) => {
-    res.send("Product route is working!");
-});
-
-// Endpoint para buscar por categoria.
-router.get("/categoria/:nombre", async (req, res) => {
-    res.send("Product route is working!");
-});
-
-// Endpoint para buscar por query params.
-router.get("/precio/:min-:max", async (req, res) => {
-    res.send("Product route is working!");
-});
-
-// Endpoint para buscar por query params.
-router.post("/masivo", async (req, res) => {
-    res.send("Product route is working!");
-});
-
-/* -------Hehco por mi-------- */
-// Endpoint para subir un archivo json con productos a la BBDD internamente del servidor.
-router.post("/upload", async (req, res) => {
-    try {
-        // Se verifica si el archivo existe y se lee su contenido.
-        const productsComputacion = await JSON.parse(readFileSync("./src/data/computacion.json", "utf-8"));
-        // Se inserta el contenido del archivo en la base de datos.
-        await Product.insertMany(productsComputacion);
-        // Mensaje y respuesta exitosa.
-        res.status(201).json({ mensaje: "Productos subidos/creados correctamente." });
-    } catch (error) {
-        console.error("Error al subir los productos:", error);
-        return res.status(500).json({ error: "Error al subir el archivo a la BBDD." });
-    }
-});
-//--------------------ENDPOINTS ADICIONALES-----------------------//
 
 export default router;
