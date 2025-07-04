@@ -74,7 +74,7 @@ router.put("/:codigo", async (req, res) => {
         const productoActualizado = await Product.findOneAndUpdate({ codigo: id }, req.body, { new: true });
         // Respuesta y mensaje por si no se encuentra el producto.
         if (productoActualizado == null) {
-            return res.status(400).json({ mensaje: "Producto no existente o codigo invalido." })
+            return res.status(404).json({ mensaje: "Producto no existente o codigo invalido." })
         }
         // Mensaje y respuesta exitosa.
         res.status(200).json({ mensaje: "Producto actualizado correctamente.", productoActualizado });
@@ -92,7 +92,7 @@ router.delete("/:codigo", async (req, res) => {
         const productoEliminado = await Product.findOneAndDelete({ codigo: id }, { new: true });
         // Respuesta y mensaje por si no se encuentra el producto.
         if (productoEliminado == null) {
-            return res.status(400).json({ mensaje: "Producto no existente o codigo invalido." })
+            return res.status(404).json({ mensaje: "Producto no existente o codigo invalido." })
         }
         // Mensaje y respuesta exitosa.
         res.status(200).json({ mensaje: "Producto eliminado correctamente.", productoEliminado });
