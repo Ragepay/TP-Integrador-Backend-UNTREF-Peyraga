@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"feat: user.route.js with CRUD endpoints\" && git push"
+		"push": "git add . && git commit -m \"feat: GET all users, GET user by id y POST register user\" && git push"
 	},
 	"dependencies": {
 		"express": "^5.1.0",

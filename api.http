@@ -113,11 +113,11 @@ Accept: application/json
 
 ### 2. Obtener un usuarios por su id.
 # Reemplaza ':id' con un id de usuarios que exista en tu base de datos.
-GET {{api_url}}/usuarios/:id
+GET {{api_url}}/usuarios/68684f5bdf67a1110da20071
 Accept: application/json
 
 ### 2.1 Obtener un usuarios con un id inexistente (debería dar 404).
-GET {{api_url}}/usuarios/:id
+GET {{api_url}}/usuarios/7868500764bcfa12e1b99ac2
 Accept: application/json
 
 ### 3. Registrar un usuario.
@@ -126,9 +126,9 @@ POST {{api_url}}/usuarios/register
 Content-Type: application/json
 
 {
-    "email": "benjapey99@gmail.com",
+    "email": "benjapey@gmail.com",
     "password": "Benja1234",
-    "nombre":"Benjamin Peyraga"
+    "name":"Benjamin Peyraga"
 }
 
 ### 4. Loguear un usuario y alamacenar el token en cookies.
@@ -154,7 +154,7 @@ PUT {{api_url}}/usuarios/1
 Content-Type: application/json
 
 {
-    "precio": 75
+    "name": "Benjamin Matias Peyraga"
 }
 
 ### 7. Eliminar un usuarios.
