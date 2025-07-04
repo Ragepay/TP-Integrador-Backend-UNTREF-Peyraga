@@ -22,7 +22,7 @@ Accept: application/json
 
 ### 2. Obtener un producto por su código
 # Reemplaza '1' con un código de producto que exista en tu base de datos.
-GET {{api_url}}/productos/1029
+GET {{api_url}}/productos/2020
 Accept: application/json
 
 ### 2.1 Obtener un producto con un código inexistente (debería dar 404)
@@ -54,7 +54,7 @@ Content-Type: application/json
 
 ### 5. Eliminar un producto
 # Reemplaza '2' con un código de producto que desees eliminar.
-DELETE {{api_url}}/productos/1029
+DELETE {{api_url}}/productos/2010
 Accept: application/json
 
 
@@ -73,7 +73,7 @@ Accept: application/json
 
 ### 8. Filtrar productos por rango de precio
 # Busca productos con precios entre 100 y 500.
-GET {{api_url}}/productos/precio/100-500
+GET {{api_url}}/productos/precio/100-200
 Accept: application/json
 
 ### 9. Carga masiva de productos
@@ -83,15 +83,21 @@ Content-Type: application/json
 
 [
     {
-        "codigo": 201,
+        "codigo": 2010,
         "nombre": "Monitor Gamer 27 pulgadas",
         "precio": 399.99,
         "categoria": ["Monitores", "Computación", "Gaming"]
     },
     {
-        "codigo": 202,
+        "codigo": 2020,
         "nombre": "Silla Gamer Ergonómica",
         "precio": 249.50,
-        "categoria": ["Mobiliario", "Gaming"]
+        "categoria": ["Computación", "Gaming"]
+    },
+    {
+        "codigo": 2020,
+        "nombre": "Silla Gamer Malarda",
+        "precio": 299.50,
+        "categoria": ["Computación", "Gaming"]
     }
 ]

@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"feat: GET /buscar?q=notebook  y GET /categoria/:nombre\" && git push"
+		"push": "git add . && git commit -m \"feat: GET /precio/:min-:max  y POST /masivo \" && git push"
 	},
 	"dependencies": {
 		"express": "^5.1.0",

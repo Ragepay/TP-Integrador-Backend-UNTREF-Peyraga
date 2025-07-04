@@ -4,7 +4,7 @@ import { readFileSync } from "fs";
 const router = Router();
 
 //--------------------ENDPOINTS ADICIONALES-----------------------//
-// Endpoint para buscar que el nombre contenga el query params "q".
+// Endpoint para buscar que contega parte del nombre.
 router.get("/buscar", async (req, res) => {
     try {
         // Obtencion del query.
@@ -29,7 +29,7 @@ router.get("/buscar", async (req, res) => {
     }
 });
 
-// Endpoint para buscar que contenga por categoria.
+// Endpoint para buscar que contenga parte de la categoria.
 router.get("/categoria/:nombre", async (req, res) => {
     try {
         // Obtencion del parametro.
@@ -50,18 +50,71 @@ router.get("/categoria/:nombre", async (req, res) => {
     }
 });
 
-// Endpoint para buscar por query params.
+// Endpoint para buscar entre un rango de precios.
 router.get("/precio/:min-:max", async (req, res) => {
-    res.send("Product route is working!");
+    try {
+        // Obtencion del parametro.
+        const { min, max } = req.params;
+        // Validacion del max y min-
+        if (isNaN(min) || isNaN(max)) {
+            return res.status(400).json({ mensaje: "Parámetros inválidos de rango de precio." });
+        }
+        // Consulta de la existencia del producto.
+        const productos = await Product.find({
+            precio: { $lte: max, $gte: min }
+        });
+        // Respuesta si no existe tal producto.
+        if (productos.length === 0) {
+            return res.status(404).json({ mensaje: "No se encontraron los productos." });
+        }
+        // Mensaje y respuesta exitosa.
+        res.status(200).json({ mensaje: "Productos encontrados correctamente.", productos });
+    } catch (error) {
+        console.error("Error al buscar productos:", error);
+        res.status(500).json({ mensaje: "Error interno del servidor." });
+    }
 });
 
-// Endpoint para buscar por query params.
+// Endpoint para crear muchos productos a la vez.
 router.post("/masivo", async (req, res) => {
-    res.send("Product route is working!");
+    try {
+        // Se obtienen los datos de los nuevos productos
+        const arrayProductos = req.body;
+        let productosAgregados = [];
+        let productosDefectuosos = [];
+        // Validacion de cada propiedad de cada producto.
+        for (const producto of arrayProductos) {
+            const { codigo, nombre, precio, categoria } = producto;
+            // Consulta de existencia del código
+            const productoExistente = await Product.findOne({ codigo });
+            // Validación completa
+            if (
+                productoExistente ||
+                typeof codigo !== 'number' || isNaN(codigo) ||
+                typeof nombre !== 'string' || nombre.trim() === '' ||
+                typeof precio !== 'number' || isNaN(precio) ||
+                !Array.isArray(categoria) || categoria.length === 0 ||
+                !categoria.every(cat => typeof cat === 'string' && cat.trim() !== '')
+            ) {
+                // Pusheamos al array de productosDefectuosos.
+                productosDefectuosos.push(producto);
+            } else {
+                // Creacion del producto en la base de datos.
+                const productoNuevo = await Product.insertOne(producto);
+                // Pusheamos al array de productosAgregados.
+                productosAgregados.push(productoNuevo);
+            }
+        }
+        // Mensaje y respuesta exitosa.
+        res.status(201).json({ mensaje: "Productos creados correctamente. OBSERVAR SI HAY 'productosDefectuosos'.", productosAgregados, productosDefectuosos });
+    } catch (error) {
+        console.error("Error al crear los productos.", error);
+        return res.status(500).json({ error: "Error al crear los productos." });
+    }
 });
 
 /* -------Hehco por mi-------- */
-// Endpoint para subir un archivo json con productos a la BBDD internamente del servidor.
+// Endpoint para subir un archivos.json con productos a la BBDD internamente del servidor utilizando fs.
 router.post("/upload", async (req, res) => {
     try {
         // Se verifica si el archivo existe y se lee su contenido.
