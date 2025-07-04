@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"refactor: POST Upload products, GET products y GET por codigo.\" && git push"
+		"push": "git add . && git commit -m \"feat: POST crear product, PUT actualizar product y DELETE eliminar product.\" && git push"
 	},
 	"dependencies": {
 		"express": "^5.1.0",

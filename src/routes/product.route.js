@@ -40,31 +40,65 @@ router.get("/:codigo", async (req, res) => {
 
 // Endpoints para crear, actualizar y eliminar productos.
 router.post("/", async (req, res) => {
-    res.send("Product route is working!");
+    try {
+        // Se obtienen los datos del nuevo producto.
+        const { codigo, nombre, precio, categoria } = req.body;
+        // Consulta de existencia del codigo de producto que es unico.
+        const producto = await Product.findOne({ codigo: codigo })
+        // Se validan que esten todos.
+        if (producto ||
+            typeof codigo !== 'number' || isNaN(codigo) ||
+            typeof nombre !== 'string' || nombre.trim() === '' ||
+            typeof precio !== 'number' || isNaN(precio) ||
+            !Array.isArray(categoria) ||
+            categoria.length === 0 ||
+            !categoria.every(cat => typeof cat === 'string' && cat.trim() !== '')
+        ) {
+            return res.status(400).json({ mensaje: "Datos inválidos o codigo de producto ya existente." });
+        }
+        // Creacion del producto en la base de datos
+        const productoNuevo = await Product.insertOne(req.body);
+        // Mensaje y respuesta exitosa.
+        res.status(201).json({ mensaje: "Producto creado correctamente.", productoNuevo });
+    } catch (error) {
+        console.error("Error al crear un producto.", error);
+        return res.status(500).json({ error: "Error al crear un producto." });
+    }
 });
 
 // Endpoint para actualizar un producto por su código.
 router.put("/:codigo", async (req, res) => {
-    res.send("Product route is working!");
-});
-//feat: POST crear product, PUT actualizar product y DELETE eliminar product.
-// Endpoint para eliminar un producto por su código.
-router.delete("/:codigo", async (req, res) => {
-    res.send("Product route is working!");
+    try {
+        // Se obtienen el id para buscar el producto.
+        const id = req.params.codigo;
+        const productoActualizado = await Product.findOneAndUpdate({ codigo: id }, req.body, { new: true });
+        // Respuesta y mensaje por si no se encuentra el producto.
+        if (productoActualizado == null) {
+            return res.status(400).json({ mensaje: "Producto no existente o codigo invalido." })
+        }
+        // Mensaje y respuesta exitosa.
+        res.status(200).json({ mensaje: "Producto actualizado correctamente.", productoActualizado });
+    } catch (error) {
+        console.error("Error al actualizar un producto.", error);
+        return res.status(500).json({ error: "Error al actualizar un producto." });
+    }
 });
 
-// Endpoint para subir muchos productos por body a la BBDD.
-router.post("/masivo", async (req, res) => {
+// Endpoint para eliminar un producto por su código.
+router.delete("/:codigo", async (req, res) => {
     try {
-        // Se verifica si el archivo existe y se lee su contenido.
-        const productsComputacion = await JSON.parse(readFileSync("./src/data/computacion.json", "utf-8"));
-        // Se inserta el contenido del archivo en la base de datos.
-        await Product.insertMany(productsComputacion);
+        // Se obtienen el id para buscar el producto.
+        const id = req.params.codigo;
+        const productoEliminado = await Product.findOneAndDelete({ codigo: id }, { new: true });
+        // Respuesta y mensaje por si no se encuentra el producto.
+        if (productoEliminado == null) {
+            return res.status(400).json({ mensaje: "Producto no existente o codigo invalido." })
+        }
         // Mensaje y respuesta exitosa.
-        res.status(201).json({ mensaje: "Productos subidos/creados correctamente." });
+        res.status(200).json({ mensaje: "Producto eliminado correctamente.", productoEliminado });
     } catch (error) {
-        console.error("Error al subir los productos:", error);
-        return res.status(500).json({ error: "Error al subir el archivo a la BBDD." });
+        console.error("Error al eliminar un producto.", error);
+        return res.status(500).json({ error: "Error al eliminar un producto." });
     }
 });
 //--------------------CRUD BASICO DE PRODUCTOS--------------------//

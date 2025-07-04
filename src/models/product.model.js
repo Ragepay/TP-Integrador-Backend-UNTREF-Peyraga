@@ -24,7 +24,8 @@ const ProductSchema = new mongoose.Schema(
                 "Portátiles",
                 "Accesorios",
                 "Impresoras",
-                "Partes de computadoras"
+                "Partes de computadoras",
+                "Gaming"
             ],
             default: "Computación"
         }
