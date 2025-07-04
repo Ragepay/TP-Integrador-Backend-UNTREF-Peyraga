@@ -1,234 +1,42 @@
 import { Router } from "express";
-import Product from "../models/product.model.js";
-import { readFileSync } from "fs";
+import productController from "../controllers/product.controller.js";
+
 const router = Router();
 
 //--------------------ENDPOINTS ADICIONALES-----------------------//
 // Endpoint para buscar que contega parte del nombre.
-router.get("/buscar", async (req, res) => {
-    try {
-        // Obtencion del query.
-        const { q } = req.query;
-        // Validacion del query.
-        if (!q || q.trim() === '') {
-            return res.status(400).json({ mensaje: "Falta el parámetro de búsqueda 'q'." });
-        }
-        // Consulta de la existencia del producto.
-        const productos = await Product.find({
-            nombre: { $regex: q, $options: 'i' } // Búsqueda insensible a mayúsculas
-        });
-        // Respuesta si no existe tal producto.
-        if (productos.length === 0) {
-            return res.status(404).json({ mensaje: "No se encontraron los productos." });
-        }
-        // Mensaje y respuesta exitosa.
-        res.status(200).json({ mensaje: "Productos encontrados correctamente.", productos });
-    } catch (error) {
-        console.error("Error al buscar productos:", error);
-        res.status(500).json({ mensaje: "Error interno del servidor." });
-    }
-});
+router.get("/buscar", productController.getByNombre);
 
 // Endpoint para buscar que contenga parte de la categoria.
-router.get("/categoria/:nombre", async (req, res) => {
-    try {
-        // Obtencion del parametro.
-        const { nombre } = req.params;
-        // Consulta de la existencia del producto.
-        const productos = await Product.find({
-            categoria: { $regex: nombre, $options: 'i' }
-        });
-        // Respuesta si no existe tal producto.
-        if (productos.length === 0) {
-            return res.status(404).json({ mensaje: "No se encontraron los productos." });
-        }
-        // Mensaje y respuesta exitosa.
-        res.status(200).json({ mensaje: "Productos encontrados correctamente.", productos });
-    } catch (error) {
-        console.error("Error al buscar productos:", error);
-        res.status(500).json({ mensaje: "Error interno del servidor." });
-    }
-});
+router.get("/categoria/:nombre", productController.getByCategoria);
 
 // Endpoint para buscar entre un rango de precios.
-router.get("/precio/:min-:max", async (req, res) => {
-    try {
-        // Obtencion del parametro.
-        const { min, max } = req.params;
-        // Validacion del max y min-
-        if (isNaN(min) || isNaN(max)) {
-            return res.status(400).json({ mensaje: "Parámetros inválidos de rango de precio." });
-        }
-        // Consulta de la existencia del producto.
-        const productos = await Product.find({
-            precio: { $lte: max, $gte: min }
-        });
-        // Respuesta si no existe tal producto.
-        if (productos.length === 0) {
-            return res.status(404).json({ mensaje: "No se encontraron los productos." });
-        }
-        // Mensaje y respuesta exitosa.
-        res.status(200).json({ mensaje: "Productos encontrados correctamente.", productos });
-    } catch (error) {
-        console.error("Error al buscar productos:", error);
-        res.status(500).json({ mensaje: "Error interno del servidor." });
-    }
-});
+router.get("/precio/:min-:max", productController.getByPrecio);
 
 // Endpoint para crear muchos productos a la vez.
-router.post("/masivo", async (req, res) => {
-    try {
-        // Se obtienen los datos de los nuevos productos
-        const arrayProductos = req.body;
-        let productosAgregados = [];
-        let productosDefectuosos = [];
-        // Validacion de cada propiedad de cada producto.
-        for (const producto of arrayProductos) {
-            const { codigo, nombre, precio, categoria } = producto;
-            // Consulta de existencia del código
-            const productoExistente = await Product.findOne({ codigo });
-            // Validación completa
-            if (
-                productoExistente ||
-                typeof codigo !== 'number' || isNaN(codigo) ||
-                typeof nombre !== 'string' || nombre.trim() === '' ||
-                typeof precio !== 'number' || isNaN(precio) ||
-                !Array.isArray(categoria) || categoria.length === 0 ||
-                !categoria.every(cat => typeof cat === 'string' && cat.trim() !== '')
-            ) {
-                // Pusheamos al array de productosDefectuosos.
-                productosDefectuosos.push(producto);
-            } else {
-                // Creacion del producto en la base de datos.
-                const productoNuevo = await Product.insertOne(producto);
-                // Pusheamos al array de productosAgregados.
-                productosAgregados.push(productoNuevo);
-            }
-        }
-        // Mensaje y respuesta exitosa.
-        res.status(201).json({ mensaje: "Productos creados correctamente. OBSERVAR SI HAY 'productosDefectuosos'.", productosAgregados, productosDefectuosos });
-    } catch (error) {
-        console.error("Error al crear los productos.", error);
-        return res.status(500).json({ error: "Error al crear los productos." });
-    }
-});
+router.post("/masivo", productController.postMasivo);
 
 /* -------Hehco por mi-------- */
 // Endpoint para subir un archivos.json con productos a la BBDD internamente del servidor utilizando fs.
-router.post("/upload", async (req, res) => {
-    try {
-        // Se verifica si el archivo existe y se lee su contenido.
-        const productsComputacion = await JSON.parse(readFileSync("./src/data/computacion.json", "utf-8"));
-        // Se inserta el contenido del archivo en la base de datos.
-        await Product.insertMany(productsComputacion);
-        // Mensaje y respuesta exitosa.
-        res.status(201).json({ mensaje: "Productos subidos/creados correctamente." });
-    } catch (error) {
-        console.error("Error al subir los productos:", error);
-        return res.status(500).json({ error: "Error al subir el archivo a la BBDD." });
-    }
-});
+router.post("/upload", productController.postUpload);
 //--------------------ENDPOINTS ADICIONALES-----------------------//
 
 
 //--------------------CRUD BASICO DE PRODUCTOS--------------------//
 // Endpoint para ver todos los productos.
-router.get("/", async (req, res) => {
-    try {
-        // Se obtienen todos los productos de la base de datos.
-        const productos = await Product.find();
-        // Mensaje y respuesta exitosa.
-        const mensaje = "Productos encontrados correctamente.";
-        res.status(200).json({ mensaje, productos });
-    } catch (error) {
-        console.error("Error al obtener los productos:", error);
-        return res.status(500).json({ error: "Error al obtener todos los productos." });
-    }
-});
+router.get("/", productController.getAll);
 
 // Endpoint para ver un producto por su código.
-router.get("/:codigo", async (req, res) => {
-    try {
-        // Se obtiene el código del producto desde los parámetros de la solicitud.
-        const { codigo } = req.params;
-        // Se busca el producto en la base de datos por su código.
-        const producto = await Product.findOne({ codigo: codigo });
-        // Si el producto no existe, se devuelve un error.
-        if (!producto) {
-            return res.status(404).json({ error: "El producto no existe." });
-        }
-        // Mensaje y respuesta exitosa.
-        const mensaje = "Producto encontrado correctamente.";
-        res.status(200).json({ mensaje, producto });
-    } catch (error) {
-        console.error("Error al obtener el producto:", error);
-        return res.status(500).json({ error: "Error al obtener el producto por codigo." });
-    }
-});
+router.get("/:codigo", productController.getByCodigo);
 
 // Endpoints para crear, actualizar y eliminar productos.
-router.post("/", async (req, res) => {
-    try {
-        // Se obtienen los datos del nuevo producto.
-        const { codigo, nombre, precio, categoria } = req.body;
-        // Consulta de existencia del codigo de producto que es unico.
-        const producto = await Product.findOne({ codigo: codigo })
-        // Se validan que esten todos.
-        if (producto ||
-            typeof codigo !== 'number' || isNaN(codigo) ||
-            typeof nombre !== 'string' || nombre.trim() === '' ||
-            typeof precio !== 'number' || isNaN(precio) ||
-            !Array.isArray(categoria) ||
-            categoria.length === 0 ||
-            !categoria.every(cat => typeof cat === 'string' && cat.trim() !== '')
-        ) {
-            return res.status(400).json({ mensaje: "Datos inválidos o codigo de producto ya existente." });
-        }
-        // Creacion del producto en la base de datos
-        const productoNuevo = await Product.insertOne(req.body);
-        // Mensaje y respuesta exitosa.
-        res.status(201).json({ mensaje: "Producto creado correctamente.", productoNuevo });
-    } catch (error) {
-        console.error("Error al crear un producto.", error);
-        return res.status(500).json({ error: "Error al crear un producto." });
-    }
-});
+router.post("/", productController.createProduct);
 
 // Endpoint para actualizar un producto por su código.
-router.put("/:codigo", async (req, res) => {
-    try {
-        // Se obtienen el id para buscar el producto.
-        const id = req.params.codigo;
-        const productoActualizado = await Product.findOneAndUpdate({ codigo: id }, req.body, { new: true });
-        // Respuesta y mensaje por si no se encuentra el producto.
-        if (productoActualizado == null) {
-            return res.status(404).json({ mensaje: "Producto no existente o codigo invalido." })
-        }
-        // Mensaje y respuesta exitosa.
-        res.status(200).json({ mensaje: "Producto actualizado correctamente.", productoActualizado });
-    } catch (error) {
-        console.error("Error al actualizar un producto.", error);
-        return res.status(500).json({ error: "Error al actualizar un producto." });
-    }
-});
+router.put("/:codigo", productController.updateProduct);
 
 // Endpoint para eliminar un producto por su código.
-router.delete("/:codigo", async (req, res) => {
-    try {
-        // Se obtienen el id para buscar el producto.
-        const id = req.params.codigo;
-        const productoEliminado = await Product.findOneAndDelete({ codigo: id }, { new: true });
-        // Respuesta y mensaje por si no se encuentra el producto.
-        if (productoEliminado == null) {
-            return res.status(404).json({ mensaje: "Producto no existente o codigo invalido." })
-        }
-        // Mensaje y respuesta exitosa.
-        res.status(200).json({ mensaje: "Producto eliminado correctamente.", productoEliminado });
-    } catch (error) {
-        console.error("Error al eliminar un producto.", error);
-        return res.status(500).json({ error: "Error al eliminar un producto." });
-    }
-});
+router.delete("/:codigo", productController.deleteProduct);
 //--------------------CRUD BASICO DE PRODUCTOS--------------------//
 
 export default router;
