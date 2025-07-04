@@ -1,5 +1,6 @@
 import { Router } from "express";
 import User from "../models/user.model.js";
+import { createTokenUtil } from "../utils/token.util.js";
 const router = Router();
 
 // Endpoint para ver todos los usuarios.
@@ -58,22 +59,59 @@ router.post("/register", async (req, res) => {
 });
 
 // Endpoint para loguear un usuario y almacenar el token en la cookie.
-router.post("/login", (req, res) => {
-    res.send("User route is working!");
+router.post("/login", async (req, res) => {
+    try {
+        // Se obtienen los datos del nuevo usuario.
+        const { email, password } = req.body;
+        // Consulta de existencia del email del usuario que es unico.
+        const usuario = await User.findOne({ email: email });
+        // Se validan que exista el usuario y se haya enviado la contraseña.
+        if (!usuario || !email || !password) {
+            return res.status(401).json({ mensaje: "Usuario no existente." });
+        }
+        // Se valida la contraseña.
+        if (usuario.password !== password) {
+            return res.status(401).json({ mensaje: "Contraseña invalida." });
+        }
+        // Creacion del token.
+        const token = createTokenUtil({
+            id: usuario._id,
+            email: email,
+            role: usuario.role
+        });
+        // Options de cookie.
+        const option = {
+            httpOnly: true,
+            maxAge: 60 * 60 * 24 * 7
+        }
+        // Mensaje y respuesta exitosa.
+        res.status(200).cookie("token", token, option).json({ mensaje: "Usuario logueado correctamente." });
+    } catch (error) {
+        console.error("Error al crear un usuario.", error);
+        return res.status(500).json({ error: "Error al crear un usuario." });
+    }
 });
 
 // Endpoint para cerrar sesion del usuario y eliminar la cookie.
-router.post("/singout", (req, res) => {
-    res.send("User route is working!");
+router.post("/signout", async (req, res) => {
+    try {
+        res
+        .status(200)
+        .clearCookie("token", { httpOnly: true, })
+        .json({ mensaje: "Usuario signout correctamente." });
+    } catch (error) {
+        console.error("Error al crear un usuario.", error);
+        return res.status(500).json({ error: "Error al crear un usuario." });
+    }
 });
 
 // Endpoint para actualizar un usuario por id.
-router.put("/", (req, res) => {
+router.put("/:id", (req, res) => {
     res.send("User route is working!");
 });
 
 // Endpoint para eliminar un usuario por id.
-router.delete("/", (req, res) => {
+router.delete("/:id", (req, res) => {
     res.send("User route is working!");
 });
 
