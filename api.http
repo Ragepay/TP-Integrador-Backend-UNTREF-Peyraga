@@ -13,7 +13,7 @@
 # Ajusta los valores de :codigo y otros campos según sea necesario.
 
 ###
-# --- CRUD Básico ---
+# --- CRUD Básico Productos ---
 
 ### 1. Obtener todos los productos
 # Devuelve la lista completa de productos.
@@ -101,3 +101,63 @@ Content-Type: application/json
         "categoria": ["Computación", "Gaming"]
     }
 ]
+
+
+
+# --- CRUD Básico Usuarios ---
+
+### 1. Obtener todos los usuarios.
+# Devuelve la lista completa de usuarios.
+GET {{api_url}}/usuarios
+Accept: application/json
+
+### 2. Obtener un usuarios por su id.
+# Reemplaza ':id' con un id de usuarios que exista en tu base de datos.
+GET {{api_url}}/usuarios/:id
+Accept: application/json
+
+### 2.1 Obtener un usuarios con un id inexistente (debería dar 404).
+GET {{api_url}}/usuarios/:id
+Accept: application/json
+
+### 3. Registrar un usuario.
+# Este endpoint registra un nuevo usuarios.
+POST {{api_url}}/usuarios/register
+Content-Type: application/json
+
+{
+    "email": "benjapey99@gmail.com",
+    "password": "Benja1234",
+    "nombre":"Benjamin Peyraga"
+}
+
+### 4. Loguear un usuario y alamacenar el token en cookies.
+# Este endpoint autentica las credenciales y crea laa cookie token.
+POST {{api_url}}/usuarios/login
+Content-Type: application/json
+
+{
+    "email": "benjapey99@gmail.com",
+    "password": "Benja1234"
+}
+
+### 5. Cerrar sesion de un usuario y eliminar la cookie con el token.
+# Este endpoint cierra la sesion eliminando la cookie.
+POST {{api_url}}/usuarios/login
+Content-Type: application/json
+
+
+### 6. Modificar un usuario existente.
+# Reemplaza '1' con un id de usuario que exista.
+# Solo se necesita enviar los campos a modificar.
+PUT {{api_url}}/usuarios/1
+Content-Type: application/json
+
+{
+    "precio": 75
+}
+
+### 7. Eliminar un usuarios.
+# Reemplaza '2' con un id de usuario que desees eliminar.
+DELETE {{api_url}}/usuarios/2
+Accept: application/json

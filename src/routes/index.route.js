@@ -10,7 +10,7 @@ router.get("/home", (req, res) => {
 
 // Asignando los edpoints de las rutas de productos y usuarios.
 router.use("/productos", productRouter);
-router.use("/users", userRouter);
+router.use("/usuarios", userRouter);
 
 
 export default router;
