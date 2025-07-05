@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"feat: middleware isAdmin.mid.js, colocacion en los endpoints e instalacion de cookie-parser\" && git push"
+		"push": "git add . && git commit -m \"docs: creacion de un nuevo README.md para descargar proyetco y utilizarlo. Creacion de un .env.example y modificaciones en el api.hhtp\" && git push"
 	},
 	"dependencies": {
 		"cookie-parser": "^1.4.7",

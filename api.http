@@ -102,6 +102,11 @@ Content-Type: application/json
     }
 ]
 
+### 9. Carga masiva de productos desde computacion.js
+# Agrega múltiples productos en una sola petición.
+POST {{api_url}}/productos/upload
+Content-Type: application/json
+
 
 
 # --- CRUD Básico Usuarios ---
