@@ -8,8 +8,9 @@ API RESTful para gestionar un catálogo de productos usando Express.js y MongoDB
 ## Cómo usar el proyecto
 
 1. Clonar el repositorio:
-   git clone https://github.com/Ragepay/TP-Integrador-Backend-UNTREF-Peyraga.git
-   cd TP-INTEGRADOR-PEYRAGA
+    ```bash
+        git clone https://github.com/Ragepay/TP-Integrador-Backend-UNTREF-Peyraga.git
+        cd TP-INTEGRADOR-PEYRAGA
 
 2. Instalar dependencias:
    npm install
