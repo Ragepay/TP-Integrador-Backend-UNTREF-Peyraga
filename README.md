@@ -13,16 +13,19 @@ API RESTful para gestionar un catálogo de productos usando Express.js y MongoDB
         cd TP-INTEGRADOR-PEYRAGA
 
 2. Instalar dependencias:
-   npm install
+    ```bash
+        npm install
 
 3. Crear un archivo `.env` en la raíz con las variables necesarias. Ejemplo:
-   SECRET_KEY=TuClaveSecreta
-   PORT=9000
-   MODE=DEVELOPMENT
-   MONGO=mongodb+srv://<Usuario>:<Contraseña>@coderback.vqrxnc2.mongodb.net/<Nombre-de-la-BBD>?retryWrites=true&w=majority&appName=<Nombre-del-cluster>
+    ```bash
+        SECRET_KEY=TuClaveSecreta
+        PORT=9000
+        MODE=DEVELOPMENT
+        MONGO=mongodb+srv://<Usuario>:<Contraseña>@coderback.vqrxnc2.mongodb.net/<Nombre-de-la-BBD>?retryWrites=true&w=majority&appName=<Nombre-del-cluster>
 
 4. Ejecutar la aplicación:
-   pnpm dev
+    ```bash
+        pnpm dev
 
 5. Crear un usuario con rol ADMIN para usar las rutas protegidas:
    - Usa Postman, REST Client o similar para hacer un POST a `/api/usuarios/register` con un JSON que incluya `"role": "ADMIN"`.
