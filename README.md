@@ -1,9 +1,17 @@
-# API REST de Productos 🛍️
+# API REST de Productos, Usuarios y Auth 🛍️
 
 ## Descripción
-API RESTful para gestionar un catálogo de productos usando Express.js y MongoDB. Permite operaciones CRUD básicas y búsquedas avanzadas. Tambien se gestionan los usuarios y contien auth.
-
+API RESTful construida con Express.js y MongoDB para gestionar un catálogo de productos, incluyendo operaciones CRUD, búsquedas avanzadas y filtros por categoría y rango de precio. Además, incorpora gestión de usuarios con autenticación y autorización basada en roles, permitiendo controlar el acceso a rutas protegidas mediante tokens almacenados en cookies.
 ---
+
+## Dependencias del Proyecto
+Las dependencias que se utilizan en este proyecto son:
+-   **cookie-parser**
+-   **express**
+-   **jsonwebtoken**
+-   **mongoose**
+-   **morgan**
+-   **swagger-ui-express** (proximamente).
 
 ## Cómo usar el proyecto
 
