@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"feat: PUT Actualizar usuario y DELETE usuario.\" && git push"
+		"push": "git add . && git commit -m \"feat: crear controladores de usuarios.\" && git push"
 	},
 	"dependencies": {
 		"express": "^5.1.0",
