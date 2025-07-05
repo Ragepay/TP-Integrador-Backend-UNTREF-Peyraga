@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"feat: POST Login y POST signout + archivo token.util.js\" && git push"
+		"push": "git add . && git commit -m \"feat: PUT Actualizar usuario y DELETE usuario.\" && git push"
 	},
 	"dependencies": {
 		"express": "^5.1.0",

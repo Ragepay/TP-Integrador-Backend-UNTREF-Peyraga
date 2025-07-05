@@ -150,14 +150,14 @@ Content-Type: application/json
 ### 6. Modificar un usuario existente.
 # Reemplaza '1' con un id de usuario que exista.
 # Solo se necesita enviar los campos a modificar.
-PUT {{api_url}}/usuarios/1
+PUT {{api_url}}/usuarios/68684f5bdf67a1110da20071
 Content-Type: application/json
 
 {
-    "name": "Benjamin Matias Peyraga"
+    "name": "Benjamin Peyraga"
 }
 
 ### 7. Eliminar un usuarios.
 # Reemplaza '2' con un id de usuario que desees eliminar.
-DELETE {{api_url}}/usuarios/2
+DELETE {{api_url}}/usuarios/6868500764bcfa12e1b99ac2
 Accept: application/json

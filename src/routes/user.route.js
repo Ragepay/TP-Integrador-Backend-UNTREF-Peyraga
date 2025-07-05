@@ -96,9 +96,9 @@ router.post("/login", async (req, res) => {
 router.post("/signout", async (req, res) => {
     try {
         res
-        .status(200)
-        .clearCookie("token", { httpOnly: true, })
-        .json({ mensaje: "Usuario signout correctamente." });
+            .status(200)
+            .clearCookie("token", { httpOnly: true, })
+            .json({ mensaje: "Usuario signout correctamente." });
     } catch (error) {
         console.error("Error al crear un usuario.", error);
         return res.status(500).json({ error: "Error al crear un usuario." });
@@ -106,13 +106,41 @@ router.post("/signout", async (req, res) => {
 });
 
 // Endpoint para actualizar un usuario por id.
-router.put("/:id", (req, res) => {
-    res.send("User route is working!");
+router.put("/:id", async (req, res) => {
+    try {
+        // Se obtiene el id por params
+        const { id } = req.params;
+        // Se obtiene el usuario por id y se modifica con los datos enviados por req.body
+        const usuarioActualizado = await User.findByIdAndUpdate(id, req.body, { new: true });
+        // Se valida que exista el usuario.
+        if (usuarioActualizado == null) {
+            return res.status(401).json({ mensaje: "Usuario no existente." });
+        }
+        // Mensaje y respuesta exitosa.
+        res.status(200).json({ mensaje: "Usuario actualizado correctamente.", usuarioActualizado });
+    } catch (error) {
+        console.error("Error al actualizar un usuario.", error);
+        return res.status(500).json({ error: "Error al actualizar un usuario." });
+    }
 });
 
 // Endpoint para eliminar un usuario por id.
-router.delete("/:id", (req, res) => {
-    res.send("User route is working!");
+router.delete("/:id", async (req, res) => {
+    try {
+        // Se obtiene el id por params
+        const { id } = req.params;
+        // Se obtiene el usuario por id y se elimina de la BBDD.
+        const usuarioEliminado = await User.findByIdAndDelete(id);
+        // Se valida que exista el usuario.
+        if (usuarioEliminado == null) {
+            return res.status(401).json({ mensaje: "Usuario no existente." });
+        }
+        // Mensaje y respuesta exitosa.
+        res.status(200).json({ mensaje: "Usuario eliminado correctamente.", usuarioEliminado });
+    } catch (error) {
+        console.error("Error al eliminar un usuario.", error);
+        return res.status(500).json({ error: "Error al eliminar un usuario." });
+    }
 });
 
 export default router;
