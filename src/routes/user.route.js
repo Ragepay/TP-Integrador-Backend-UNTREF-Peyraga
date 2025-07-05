@@ -1,12 +1,15 @@
 import { Router } from "express";
 import userController from "../controllers/user.controller.js";
+import isAdmin from "../middlewares/isAdmin.mid.js";
 const router = Router();
 
-// Endpoint para ver todos los usuarios.
-router.get("/", userController.getAllUsers);
+// Endpoint para ver todos los usuarios. 
+// ----- RUTA PRIVADA -----
+router.get("/", isAdmin, userController.getAllUsers);
 
-// Endpoint para ver un usuario por id.
-router.get("/:id", userController.getUserbyId);
+// Endpoint para ver un usuario por id. 
+// ----- RUTA PRIVADA -----
+router.get("/:id", isAdmin, userController.getUserbyId);
 
 // Endpoint para registrar un nuevo usuario.
 router.post("/register", userController.registerUser);
@@ -17,10 +20,12 @@ router.post("/login", userController.loginUser);
 // Endpoint para cerrar sesion del usuario y eliminar la cookie.
 router.post("/signout", userController.signoutUser);
 
-// Endpoint para actualizar un usuario por id.
-router.put("/:id", userController.updateUser);
+// Endpoint para actualizar un usuario por id. 
+// ----- RUTA PRIVADA -----
+router.put("/:id", isAdmin, userController.updateUser);
 
-// Endpoint para eliminar un usuario por id.
-router.delete("/:id", userController.deleteUser);
+// Endpoint para eliminar un usuario por id. 
+// ----- RUTA PRIVADA -----
+router.delete("/:id", isAdmin, userController.deleteUser);
 
 export default router;

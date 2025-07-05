@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 import indexRouter from "./src/routes/index.route.js";
 import errorHandler from "./src/middlewares/errorHandler.mid.js";
 import pathHandler from "./src/middlewares/pathHandler.mid.js";
@@ -19,7 +20,7 @@ app.disable("x-powered-by"); // Deshabilita la cabecera 'X-Powered-By' para evit
 app.use(express.json()); // Parsea JSON del body
 app.use(express.urlencoded({ extended: true })); // Parsea datos de formularios
 app.use(morgan("dev")); // Logger para ver las peticiones en consola.
-
+app.use(cookieParser());
 // Rutas
 app.use("/api", indexRouter);
 

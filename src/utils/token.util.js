@@ -12,7 +12,7 @@ const createTokenUtil = (data) => {
 // Verifica un Token y devuelve la data codificada dentro de el.
 const verifyTokenUtil = (token) => {
     const verifyData = jwt.verify(token, SECRET_KEY);
-    return verifyData; // Devuelve un booleano.
+    return verifyData;
 };
 
 // Crear un token con data. Dura 1 segundo. Para el signout.

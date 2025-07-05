@@ -1,5 +1,6 @@
 import { Router } from "express";
 import productController from "../controllers/product.controller.js";
+import isAdmin from "../middlewares/isAdmin.mid.js";
 
 const router = Router();
 
@@ -13,12 +14,14 @@ router.get("/categoria/:nombre", productController.getByCategoria);
 // Endpoint para buscar entre un rango de precios.
 router.get("/precio/:min-:max", productController.getByPrecio);
 
-// Endpoint para crear muchos productos a la vez.
-router.post("/masivo", productController.postMasivo);
+// Endpoint para crear muchos productos a la vez.  
+// ----- RUTA PRIVADA -----
+router.post("/masivo", isAdmin, productController.postMasivo);
 
 /* -------Hehco por mi-------- */
 // Endpoint para subir un archivos.json con productos a la BBDD internamente del servidor utilizando fs.
-router.post("/upload", productController.postUpload);
+// ----- RUTA PRIVADA -----
+router.post("/upload", isAdmin, productController.postUpload);
 //--------------------ENDPOINTS ADICIONALES-----------------------//
 
 
