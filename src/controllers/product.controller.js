@@ -22,7 +22,7 @@ const getByNombre = async (req, res) => {
         res.status(200).json({ mensaje: "Productos encontrados correctamente.", productos });
     } catch (error) {
         console.error("Error al buscar productos:", error);
-        res.status(500).json({ mensaje: "Error interno del servidor." });
+        res.status(500).json({ error: "Error interno del servidor." });
     }
 }
 
@@ -42,7 +42,7 @@ const getByCategoria = async (req, res) => {
         res.status(200).json({ mensaje: "Productos encontrados correctamente.", productos });
     } catch (error) {
         console.error("Error al buscar productos:", error);
-        res.status(500).json({ mensaje: "Error interno del servidor." });
+        res.status(500).json({ error: "Error interno del servidor." });
     }
 }
 
@@ -66,7 +66,7 @@ const getByPrecio = async (req, res) => {
         res.status(200).json({ mensaje: "Productos encontrados correctamente.", productos });
     } catch (error) {
         console.error("Error al buscar productos:", error);
-        res.status(500).json({ mensaje: "Error interno del servidor." });
+        res.status(500).json({ error: "Error interno del servidor." });
     }
 }
 

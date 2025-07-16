@@ -326,8 +326,349 @@ paths:
                     type: string
                     description: "Error al eliminar un producto."
                     example: "Error al eliminar un producto."
+
   /api/productos/buscar:
+    get:
+      summary: Busca productos por nombre.
+      tags:
+        - Productos
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Productos encontrados correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Productos encontrados correctamente."
+                    example: "Productos encontrados correctamente."
+                  productos:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Productos"
+        "404":
+          description: No se encontraron los productos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "No se encontraron los productos."
+                    example: "No se encontraron los productos."
+        "500":
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error interno del servidor."
+                    example: "Error interno del servidor."
+
   /api/productos/categoria/{nombre}:
+    get:
+      summary: Busca productos por categoria.
+      tags:
+        - Productos
+      parameters:
+        - name: nombre
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Productos encontrados correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Productos encontrados correctamente."
+                    example: "Productos encontrados correctamente."
+                  productos:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Productos"
+        "404":
+          description: No se encontraron los productos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "No se encontraron los productos."
+                    example: "No se encontraron los productos."
+        "500":
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error interno del servidor."
+                    example: "Error interno del servidor."
+
   /api/productos/precio/{min-max}:
+    get:
+      summary: Busca productos por rango de precio.
+      tags:
+        - Productos
+      parameters:
+        - name: min-max
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Productos encontrados correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Productos encontrados correctamente."
+                    example: "Productos encontrados correctamente."
+                  productos:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Productos"
+        "400":
+          description: Parámetros inválidos de rango de precio.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Parámetros inválidos de rango de precio."
+                    example: "Parámetros inválidos de rango de precio."
+        "404":
+          description: No se encontraron los productos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "No se encontraron los productos."
+                    example: "No se encontraron los productos."
+        "500":
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error interno del servidor."
+                    example: "Error interno del servidor."
+
   /api/productos/masivo/:
+    post:
+      summary: Carga masiva de productos válidos; se omiten y devuelven los que fallan.
+      tags:
+        - Productos
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  codigo:
+                    type: number
+                    description: "Código del producto."
+                    example: 1029
+                  nombre:
+                    type: string
+                    description: "Nombre del producto."
+                    example: "Teclado Luminoso RGBA"
+                  precio:
+                    type: number
+                    description: "Precio del producto."
+                    example: 75.50
+                  categoria:
+                    type: array
+                    description: "Categoría(s) del producto."
+                    items:
+                      type: string
+                    example: ["Accesorios", "Computación", "Gaming"]
+                required:
+                  - codigo
+                  - nombre
+                  - precio
+                  - categoria
+              example:
+                - codigo: 1029
+                  nombre: "Teclado Luminoso RGBA"
+                  precio: 75.50
+                  categoria: ["Accesorios", "Computación", "Gaming"]
+                - codigo: 1030
+                  nombre: "Mouse Inalámbrico"
+                  precio: 45.00
+                  categoria: ["Accesorios"]
+                - codigo: 1031
+                  nombre: "Monitor 24 Full HD"
+                  precio: 150.00
+                  categoria: ["Monitores", "Computación"]
+      responses:
+        "201":
+          description: Productos creados correctamente. OBSERVAR SI HAY 'productosDefectuosos'.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Productos creados correctamente. OBSERVAR SI HAY 'productosDefectuosos'."
+                    example: "Productos creados correctamente. OBSERVAR SI HAY 'productosDefectuosos'."
+                  productosAgregados:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Productos"
+                      example:
+                        - codigo: 1029
+                          nombre: "Teclado Luminoso RGBA"
+                          precio: 75.50
+                          categoria: ["Accesorios", "Computación", "Gaming"]
+                          _id: "6877ef69c60e260d38dbb25f"
+                          createdAt: "2025-07-16T18:28:57.603Z"
+                          updatedAt: "2025-07-16T18:28:57.603Z"
+                          __v: 0
+                        - codigo: 1030
+                          nombre: "Mouse Inalámbrico"
+                          precio: 45.00
+                          categoria: ["Accesorios"]
+                          _id: "6877ef69c60e260d38dbb262"
+                          createdAt: "2025-07-16T18:28:57.603Z"
+                          updatedAt: "2025-07-16T18:28:57.603Z"
+                          __v: 0
+                        - codigo: 1031
+                          nombre: "Monitor 24 Full HD"
+                          precio: 150.00
+                          categoria: ["Monitores", "Computación"]
+                          _id: "6877ef69c60e260d38dbb265"
+                          createdAt: "2025-07-16T18:28:57.603Z"
+                          updatedAt: "2025-07-16T18:28:57.603Z"
+                          __v: 0
+                  productosDefectuosos:
+                    type: array
+                    description: "Lista de productos no creados por errores o duplicados."
+                    items:
+                      type: object
+        "401":
+          description: Token inválido o expirado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Token inválido o expirado."
+                    example: "Token inválido o expirado."
+        "403":
+          description: Usted no está autorizado, solo ADMIN.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usted no está autorizado, solo ADMIN."
+                    example: "Usted no está autorizado, solo ADMIN."
+        "500":
+          description: Error al crear los productos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error al crear los productos."
+                    example: "Error al crear los productos."
+
   /api/productos/upload/:
+    post:
+      summary: Crea productos de forma masiva.
+      tags:
+        - Productos
+      security:
+        - cookieAuth: []
+      responses:
+        "201":
+          description: Productos subidos/creados correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Productos subidos/creados correctamente."
+                    example: "Productos subidos/creados correctamente."
+        "401":
+          description: Token inválido o expirado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Token inválido o expirado."
+                    example: "Token inválido o expirado."
+        "403":
+          description: Usted no está autorizado, solo ADMIN.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usted no está autorizado, solo ADMIN."
+                    example: "Usted no está autorizado, solo ADMIN."
+        "500":
+          description: Error al subir el archivo a la BBDD.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error al subir el archivo a la BBDD."
+                    example: "Error al subir el archivo a la BBDD."

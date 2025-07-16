@@ -54,7 +54,7 @@ Content-Type: application/json
 
 ### 5. Eliminar un producto
 # Reemplaza '2' con un código de producto que desees eliminar.
-DELETE {{api_url}}/productos/1029
+DELETE {{api_url}}/productos/2030
 Accept: application/json
 
 
@@ -95,7 +95,7 @@ Content-Type: application/json
         "categoria": ["Computación", "Gaming"]
     },
     {
-        "codigo": 2020,
+        "codigo": 2030,
         "nombre": "Silla Gamer Malarda",
         "precio": 299.50,
         "categoria": ["Computación", "Gaming"]
