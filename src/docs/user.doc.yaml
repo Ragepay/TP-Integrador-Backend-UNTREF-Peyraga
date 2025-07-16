@@ -4,45 +4,21 @@ components:
       type: object
       properties:
         name:
-          description: User's name.
+          description: Nombre del usuario.
           type: string
         email:
-          description: User's email.
-          type: string
-          format: email
-        photo:
-          description: User's photo or initials of their names.
-          type: string
-          format: uri
-          default: "https://via.placeholder.com/150"
-        phone:
-          description: User's phone.
-          type: string
-          default: "0"
-        emailGoogle:
-          description: User's google email.
+          description: Correo electrónico del usuario.
           type: string
           format: email
         password:
-          description: User's password.
+          description: Contraseña del usuario.
           type: string
           format: password
         role:
-          description: User's role.
+          description: Rol del usuario.
           type: string
-          enum: ["USER", "PREM", "ADMIN"]
+          enum: ["USER", "ADMIN"]
           default: "USER"
-        verify:
-          description: Used to determine if the account is verified.
-          type: boolean
-          default: false
-        verifyCode:
-          description: 12-character hexadecimal code generated for account verification via a link.
-          type: string
-        isOnline:
-          description: Indicates if the user is online.
-          type: boolean
-          default: false
         createdAt:
           type: string
           format: date-time
@@ -51,70 +27,129 @@ components:
           type: string
           format: date-time
           description: "Timestamp of the last update."
+        __v:
+          type: integer
+          description: "Versión interna del documento (MongoDB)."
       required:
         - email
         - password
-        - verifyCode
+        - name
       example:
         _id: "67a15897c66d2be27a674932"
         email: "benjapey@hotmail.com"
-        photo: "https://ui-avatars.com/api/?background=random&name=benjapey@hotmail.com"
-        phone: "+5493487512474"
-        password: "$2b$10$yCtA.oC7P5tMKkbp5roH3.wjOcnGkjuXT3106DgdcIjkgJuIQVt0i"
-        role: "USER"
-        verify: false
-        verifyCode: "8549140ed72586165c14e56e"
-        isOnline: true
-        __v: 0
+        password: "Benja1234"
+        name: "Benjamin Peyraga"
+        role: "ADMIN"
+        CreatedAt: "2025-03-09T02:15:41.340Z"
         updatedAt: "2025-03-09T02:15:41.340Z"
+        __v: 0
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
 
   responses:
-    register201:
-    badAuth:
-    forbidden:
-    notFound:
-    fatal:
+    fatal500:
+      description: Error interno del servidor.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: "Error interno del servidor."
+                example: "EError interno del servidor."
 
 paths:
-  /api/sessions/register:
-    post:
-      summary: Registra al usuario en la base de datos (incluye hash y generacion de verifycode).
+  /api/usuarios/:
+    get:
+      summary: Ver todos los usuarios registrados.
       tags:
-        - Sessions
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: "benjapey99@gmail.com"
-                password:
-                  type: string
-                  format: password
-                  example: "Hola1234"
+        - Usuarios
+      security:
+        - cookieAuth: []
       responses:
-        "201":
-          description: Usuario registrado exitosamente.
+        "200":
+          description: Usuarios encontrados correctamente.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "400":
-          description: Missing credencials/Falta de datos/Datos incorrectos.
-        "401":
-          description: USER ALREADY EXISTS.
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuarios encontrados correctamente."
+                    example: "Usuarios encontrados correctamente."
+                  usuarios:
+                    type: array
+                    description: "Listado de usuarios encontrados."
+                    items:
+                      $ref: "#/components/schemas/Usuarios"
         "500":
-          description: Fatal Server Error.
+          $ref: "#/components/responses/fatal500"
 
-  /api/sessions/login:
-    post:
-      summary: Iniciar sesión con usuario previamente registrado (incluye guardado de token en cookie).
+  /api/usuarios/{id}:
+    get:
+      summary: Ver todos los usuarios registrados.
       tags:
-        - Sessions
+        - Usuarios
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: "ID del usuario a buscar."
+      responses:
+        "200":
+          description: Usuario encontrado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuario encontrado correctamente."
+                    example: "Usuario encontrado correctamente."
+                  usuario:
+                    type: object
+                    description: "Usuario encontrado."
+                    $ref: "#/components/schemas/Usuarios"
+
+        "404":
+          description: El usuario no existe.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "El usuario no existe."
+                    example: "El usuario no existe."
+
+        "500":
+          $ref: "#/components/responses/fatal500"
+    
+    put:
+      summary: Actualizar un usuario existente buscado por ID.
+      tags:
+        - Usuarios
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: "ID del usuario a buscar."
       requestBody:
         required: true
         content:
@@ -130,64 +165,216 @@ paths:
                   type: string
                   format: password
                   example: "Hola1234"
+                name:
+                  type: string
+                  example: "Benjamin Peyraga"
+      responses:
+        "200":
+          description: Usuario actualizado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuario actualizado correctamente."
+                    example: "Usuario actualizado correctamente."
+                  usuarioActualizado:
+                    type: object
+                    description: "Usuario actualizado."
+                    $ref: "#/components/schemas/Usuarios"
+
+        "401":
+          description: Usuario no existente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuario no existente."
+                    example: "Usuario no existente."
+
+        "500":
+          $ref: "#/components/responses/fatal500"
+    
+    delete:
+      summary: Eliminar un usuario existente buscado por ID.
+      tags:
+        - Usuarios
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: "ID del usuario a buscar."
+      responses:
+       responses:
+        "200":
+          description: Usuario eliminado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuario eliminado correctamente."
+                    example: "Usuario eliminado correctamente."
+                  usuarioEliminado:
+                    type: object
+                    description: "Usuario eliminado."
+                    $ref: "#/components/schemas/Usuarios"
+
+        "401":
+          description: Usuario no existente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuario no existente."
+                    example: "Usuario no existente."
+
+        "500":
+          $ref: "#/components/responses/fatal500"
+
+  /api/usuarios/register:
+    post:
+      summary: Registra al usuario en la base de datos.
+      tags:
+        - Usuarios
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "benjapey99@gmail.com"
+                password:
+                  type: string
+                  format: password
+                  example: "Hola1234"
+                name:
+                  type: string
+                  example: "Benjamin Peyraga"
+                role:
+                  type: string
+                  example: "USER"
+      responses:
+        "201":
+          description: Usuario creado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuario creado correctamente."
+                    example: "Usuario creado correctamente."
+                  usuarioNuevo:
+                    type: object
+                    $ref: "#/components/schemas/Usuarios"
+        "400":
+          description: Datos inválidos o email existente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Datos inválidos o email existente"
+                    example: "Datos inválidos o email existente"
+        "500":
+          $ref: "#/components/responses/fatal500"
+
+  /api/usuarios/login:
+    post:
+      summary: Iniciar sesión con usuario previamente registrado (incluye guardado de token en cookie).
+      tags:
+        - Usuarios
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "benjapey99@gmail.com"
+                password:
+                  type: string
+                  format: password
+                  example: "Benja1234"
       responses:
         "200":
           description: Inicio de sesión exitoso. Token guardado en la cookie.
-        "400":
-          description: Credenciales incorrectas.
-        "500":
-          description: Error del servidor.
-
-  /api/sessions/signout:
-    post:
-      summary: Cerrar sesión, eliminando/venciendo el token de la cookie.
-      tags:
-        - Sessions
-      security:
-        - cookieAuth: []
-      responses:
-        "200":
-          description: Cierre de sesión exitoso. El token se eliminó de la cookie.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuario logueado correctamente."
+                    example: "Usuario logueado correctamente."
         "401":
-          description: Bad Auth!
-        "500":
-          description: Error del servidor.
-
-  /api/sessions/online:
-    post:
-      summary: Verifica si el usario esta online.
-      tags:
-        - Sessions
-      security:
-        - cookieAuth: []
-      responses:
-        "200":
-          description: El usuario esta online.
-        "401":
-          description: Bad Auth!
-        "500":
-          description: Error del servidor.
-
-  /api/sessions/auth/google:
-    get:
-      summary: Registro con google oauth.
-      tags:
-        - Sessions
-      responses:
-        "200":
-          description: Usuario haciendo oauth con google.
-        "500":
-          description: Error del servidor.
-
-  /api/sessions/verify:
-    get:
-      summary: Verificacion del verifyCode para verificar la cuenta.
-      tags:
-        - Sessions
-      responses:
-        "200":
-          description: Cuenta verificada.
+          description: Contraseña invalida.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Contraseña invalida."
+                    example: "Contraseña invalida."
         "404":
-          description: Codigo no encontrado.
+          description: Usuario no existente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuario no existente."
+                    example: "Usuario no existente.."
         "500":
-          description: Error del servidor.
+          $ref: "#/components/responses/fatal500"
+
+  /api/usuarios/signout:
+    post:
+      summary: Cerrar sesión, eliminando la cookie con el token.
+      tags:
+        - Usuarios
+      responses:
+        "200":
+          description: Usuario signout correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Usuario signout correctamente."
+                    example: "Usuario signout correctamente."
+        "500":
+          $ref: "#/components/responses/fatal500"
+

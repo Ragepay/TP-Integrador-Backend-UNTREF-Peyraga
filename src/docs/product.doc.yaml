@@ -47,6 +47,9 @@ components:
           description: "Versión interna del documento (MongoDB)."
       required:
         - codigo
+        - nombre
+        - precio
+        - categoria
       example:
         _id: "685f5bb76d47a8cb9473de67"
         codigo: 8101
@@ -427,13 +430,18 @@ paths:
                     description: "Error interno del servidor."
                     example: "Error interno del servidor."
 
-  /api/productos/precio/{min-max}:
+  /api/productos/precio/{min}/{max}:
     get:
       summary: Busca productos por rango de precio.
       tags:
         - Productos
       parameters:
-        - name: min-max
+        - name: min
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: max
           in: path
           required: true
           schema:
@@ -622,7 +630,7 @@ paths:
 
   /api/productos/upload/:
     post:
-      summary: Crea productos de forma masiva.
+      summary: Sube los productos desde el archivo computacion.json a la BBDD.
       tags:
         - Productos
       security:

@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"feat: documentacion en swagger de endpoints adicionales de productos. Fix: isAdmin.js y respuestas de algunos products para estandarizar.\" && git push"
+		"push": "git add . && git commit -m \"feat: documentacion en swagger de endpoints de usuarios.\" && git push"
 	},
 	"dependencies": {
 		"cookie-parser": "^1.4.7",

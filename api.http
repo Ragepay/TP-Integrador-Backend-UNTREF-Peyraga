@@ -73,7 +73,7 @@ Accept: application/json
 
 ### 8. Filtrar productos por rango de precio
 # Busca productos con precios entre 100 y 500.
-GET {{api_url}}/productos/precio/100-200
+GET {{api_url}}/productos/precio/10/ab
 Accept: application/json
 
 ### 9. Carga masiva de productos

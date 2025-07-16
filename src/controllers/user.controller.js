@@ -24,7 +24,7 @@ const getUserbyId = async (req, res) => {
         const usuario = await User.findById(id);
         // Si el usuario no existe, se devuelve un error.
         if (!usuario) {
-            return res.status(404).json({ error: "El usuario no existe." });
+            return res.status(404).json({ mensaje: "El usuario no existe." });
         }
         // Mensaje y respuesta exitosa.
         const mensaje = "Usuario encontrado correctamente.";
@@ -63,7 +63,7 @@ const loginUser = async (req, res) => {
         const usuario = await User.findOne({ email: email });
         // Se validan que exista el usuario y se haya enviado la contraseña.
         if (!usuario || !email || !password) {
-            return res.status(401).json({ mensaje: "Usuario no existente." });
+            return res.status(404).json({ mensaje: "Usuario no existente." });
         }
         // Se valida la contraseña.
         if (usuario.password !== password) {
@@ -96,7 +96,7 @@ const signoutUser = async (req, res) => {
             .json({ mensaje: "Usuario signout correctamente." });
     } catch (error) {
         console.error("Error al crear un usuario.", error);
-        return res.status(500).json({ error: "Error al crear un usuario." });
+        return res.status(500).json({ error: "Error al signout un usuario." });
     }
 }
 

@@ -12,7 +12,7 @@ router.get("/buscar", productController.getByNombre);
 router.get("/categoria/:nombre", productController.getByCategoria);
 
 // Endpoint para buscar entre un rango de precios.
-router.get("/precio/:min-:max", productController.getByPrecio);
+router.get("/precio/:min/:max", productController.getByPrecio);
 
 // Endpoint para crear muchos productos a la vez.  
 // ----- RUTA PRIVADA -----
