@@ -1,0 +1,193 @@
+components:
+  schemas:
+    Usuarios:
+      type: object
+      properties:
+        name:
+          description: User's name.
+          type: string
+        email:
+          description: User's email.
+          type: string
+          format: email
+        photo:
+          description: User's photo or initials of their names.
+          type: string
+          format: uri
+          default: "https://via.placeholder.com/150"
+        phone:
+          description: User's phone.
+          type: string
+          default: "0"
+        emailGoogle:
+          description: User's google email.
+          type: string
+          format: email
+        password:
+          description: User's password.
+          type: string
+          format: password
+        role:
+          description: User's role.
+          type: string
+          enum: ["USER", "PREM", "ADMIN"]
+          default: "USER"
+        verify:
+          description: Used to determine if the account is verified.
+          type: boolean
+          default: false
+        verifyCode:
+          description: 12-character hexadecimal code generated for account verification via a link.
+          type: string
+        isOnline:
+          description: Indicates if the user is online.
+          type: boolean
+          default: false
+        createdAt:
+          type: string
+          format: date-time
+          description: "Timestamp of when the user was created."
+        updatedAt:
+          type: string
+          format: date-time
+          description: "Timestamp of the last update."
+      required:
+        - email
+        - password
+        - verifyCode
+      example:
+        _id: "67a15897c66d2be27a674932"
+        email: "benjapey@hotmail.com"
+        photo: "https://ui-avatars.com/api/?background=random&name=benjapey@hotmail.com"
+        phone: "+5493487512474"
+        password: "$2b$10$yCtA.oC7P5tMKkbp5roH3.wjOcnGkjuXT3106DgdcIjkgJuIQVt0i"
+        role: "USER"
+        verify: false
+        verifyCode: "8549140ed72586165c14e56e"
+        isOnline: true
+        __v: 0
+        updatedAt: "2025-03-09T02:15:41.340Z"
+
+  responses:
+    register201:
+    badAuth:
+    forbidden:
+    notFound:
+    fatal:
+
+paths:
+  /api/sessions/register:
+    post:
+      summary: Registra al usuario en la base de datos (incluye hash y generacion de verifycode).
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "benjapey99@gmail.com"
+                password:
+                  type: string
+                  format: password
+                  example: "Hola1234"
+      responses:
+        "201":
+          description: Usuario registrado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Missing credencials/Falta de datos/Datos incorrectos.
+        "401":
+          description: USER ALREADY EXISTS.
+        "500":
+          description: Fatal Server Error.
+
+  /api/sessions/login:
+    post:
+      summary: Iniciar sesión con usuario previamente registrado (incluye guardado de token en cookie).
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "benjapey99@gmail.com"
+                password:
+                  type: string
+                  format: password
+                  example: "Hola1234"
+      responses:
+        "200":
+          description: Inicio de sesión exitoso. Token guardado en la cookie.
+        "400":
+          description: Credenciales incorrectas.
+        "500":
+          description: Error del servidor.
+
+  /api/sessions/signout:
+    post:
+      summary: Cerrar sesión, eliminando/venciendo el token de la cookie.
+      tags:
+        - Sessions
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Cierre de sesión exitoso. El token se eliminó de la cookie.
+        "401":
+          description: Bad Auth!
+        "500":
+          description: Error del servidor.
+
+  /api/sessions/online:
+    post:
+      summary: Verifica si el usario esta online.
+      tags:
+        - Sessions
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: El usuario esta online.
+        "401":
+          description: Bad Auth!
+        "500":
+          description: Error del servidor.
+
+  /api/sessions/auth/google:
+    get:
+      summary: Registro con google oauth.
+      tags:
+        - Sessions
+      responses:
+        "200":
+          description: Usuario haciendo oauth con google.
+        "500":
+          description: Error del servidor.
+
+  /api/sessions/verify:
+    get:
+      summary: Verificacion del verifyCode para verificar la cuenta.
+      tags:
+        - Sessions
+      responses:
+        "200":
+          description: Cuenta verificada.
+        "404":
+          description: Codigo no encontrado.
+        "500":
+          description: Error del servidor.

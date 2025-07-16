@@ -7,13 +7,15 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"docs: modificacion del readme.md\" && git push"
+		"push": "git add . && git commit -m \"feat: instalacion de swagger y creacion de documentacion de CRUD productos\" && git push"
 	},
 	"dependencies": {
 		"cookie-parser": "^1.4.7",
 		"express": "^5.1.0",
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.16.1",
-		"morgan": "^1.10.0"
+		"morgan": "^1.10.0",
+		"swagger-jsdoc": "^6.2.8",
+		"swagger-ui-express": "^5.0.1"
 	}
 }

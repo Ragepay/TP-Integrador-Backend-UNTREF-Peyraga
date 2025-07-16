@@ -54,7 +54,7 @@ Content-Type: application/json
 
 ### 5. Eliminar un producto
 # Reemplaza '2' con un código de producto que desees eliminar.
-DELETE {{api_url}}/productos/2010
+DELETE {{api_url}}/productos/1029
 Accept: application/json
 
 

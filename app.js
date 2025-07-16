@@ -5,6 +5,8 @@ import indexRouter from "./src/routes/index.route.js";
 import errorHandler from "./src/middlewares/errorHandler.mid.js";
 import pathHandler from "./src/middlewares/pathHandler.mid.js";
 import { dbConnect, dbDisconnect } from "./src/utils/mongoConnect.util.js";
+import docSpec from "./src/utils/docSpec.util.js";
+import { serve, setup } from "swagger-ui-express";
 
 // Cargar variables de entorno.
 process.loadEnvFile();
@@ -21,6 +23,9 @@ app.use(express.json()); // Parsea JSON del body
 app.use(express.urlencoded({ extended: true })); // Parsea datos de formularios
 app.use(morgan("dev")); // Logger para ver las peticiones en consola.
 app.use(cookieParser());
+// Middleware para Documentar con swagger.
+app.use("/api/docs", serve, setup(docSpec));
+
 // Rutas
 app.use("/api", indexRouter);
 

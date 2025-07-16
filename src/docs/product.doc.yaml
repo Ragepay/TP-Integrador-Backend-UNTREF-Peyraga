@@ -1,0 +1,333 @@
+openapi: 3.1.0
+components:
+  schemas:
+    Productos:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "ID generado por la base de datos."
+        nombre:
+          type: string
+          description: "Nombre del producto."
+        codigo:
+          type: number
+          description: "Codigo de producto."
+        precio:
+          type: number
+          default: 1
+          description: "Precio del producto."
+        categoria:
+          type: array
+          items:
+            type: string
+          enum:
+            [
+              "Monitores",
+              "Computación",
+              "Desktop",
+              "Portátiles",
+              "Accesorios",
+              "Impresoras",
+              "Partes de computadoras",
+              "Gaming",
+            ]
+          default: "Computación"
+          description: "Categoria del producto."
+        createdAt:
+          type: string
+          format: date-time
+          description: "Tiempo de creacion del producto."
+        updatedAt:
+          type: string
+          format: date-time
+          description: "Tiempo de la ultima actualizacion."
+        __v:
+          type: integer
+          description: "Versión interna del documento (MongoDB)."
+      required:
+        - codigo
+      example:
+        _id: "685f5bb76d47a8cb9473de67"
+        codigo: 8101
+        nombre: "Desktop Gaming"
+        precio: 999.99
+        categoria: ["Desktop", "Computación"]
+        __v: 0
+        createdAt: "2025-06-28T03:04:23.160Z"
+        updatedAt: "2025-06-28T03:04:23.160Z"
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+
+paths:
+  /api/productos:
+    get:
+      summary: Obtiene todos los productos.
+      tags:
+        - Productos
+      responses:
+        "200":
+          description: Lista de productos encontrados correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Respuesta del servidor indicando éxito."
+                    example: "Productos encontrados correctamente."
+                  productos:
+                    type: array
+                    description: "Listado de productos encontrados."
+                    items:
+                      $ref: "#/components/schemas/Productos"
+        "500":
+          description: Error al obtener todos los productos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Mensaje de error"
+                    example: "Error al obtener todos los productos."
+
+    post:
+      summary: Crea un producto.
+      tags:
+        - Productos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                codigo:
+                  type: number
+                  description: "Codigo del producto."
+                  example: 1029
+                nombre:
+                  type: string
+                  description: "Nombre del producto."
+                  example: "Teclado Luminoso RGBA"
+                precio:
+                  type: number
+                  description: "Precio del producto."
+                  example: 75.50
+                categoria:
+                  type: array
+                  description: "Categoria del producto."
+                  example: ["Accesorios", "Computación", "Gaming"]
+      responses:
+        "201":
+          description: Producto creado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Producto creado correctamente."
+                    example: Producto creado correctamente.
+                  productoNuevo:
+                    $ref: "#/components/schemas/Productos"
+        "400":
+          description: Datos inválidos o codigo de producto ya existente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Datos inválidos o codigo de producto ya existente."
+                    example: "Datos inválidos o codigo de producto ya existente."
+        "500":
+          description: Error al crear un producto.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error al crear un producto."
+                    example: "Error al crear un producto."
+
+  /api/productos/{codigo}:
+    get:
+      summary: Obtiene un producto por codigo.
+      tags:
+        - Productos
+      parameters:
+        - name: codigo
+          in: path
+          required: true
+          schema:
+            type: number
+            description: "Codigo del producto a buscar."
+      responses:
+        "200":
+          description: Producto encontrado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Producto encontrado correctamente."
+                    example: Producto encontrado correctamente.
+                  producto:
+                    $ref: "#/components/schemas/Productos"
+        "404":
+          description: El producto no existe.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "El producto no existe."
+                    example: "El producto no existe."
+        "500":
+          description: Error al obtener el producto por codigo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error al obtener el producto por codigo."
+                    example: "Error al obtener el producto por codigo."
+
+    put:
+      summary: Modifica un producto por codigo
+      tags:
+        - Productos
+      parameters:
+        - name: codigo
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                codigo:
+                  type: number
+                  description: "Codigo del producto."
+                  example: 1029
+                nombre:
+                  type: string
+                  description: "Nombre del producto."
+                  example: "Teclado Luminoso RGBA"
+                precio:
+                  type: number
+                  description: "Precio del producto."
+                  example: 75.50
+                categoria:
+                  type: array
+                  description: "Categoria del producto."
+                  example: ["Accesorios", "Computación", "Gaming"]
+      responses:
+        "200":
+          description: Producto actualizado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Producto actualizado correctamente."
+                    example: "Producto actualizado correctamente."
+                  productoActualizado:
+                    $ref: "#/components/schemas/Productos"
+        "404":
+          description: Producto no existente o codigo invalido.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Producto no existente o codigo invalido."
+                    example: "Producto no existente o codigo invalido."
+        "500":
+          description: Error al actualizar un producto.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error al actualizar un producto."
+                    example: "Error al actualizar un producto."
+
+    delete:
+      summary: Elimina un producto por codigo
+      tags:
+        - Productos
+      parameters:
+        - name: codigo
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Producto eliminado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Producto eliminado correctamente."
+                    example: "Producto eliminado correctamente."
+                  productoEliminado:
+                    $ref: "#/components/schemas/Productos"
+        "404":
+          description: Producto no existente o codigo invalido.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: "Producto no existente o codigo invalido."
+                    example: "Producto no existente o codigo invalido."
+        "500":
+          description: Error al eliminar un producto.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error al eliminar un producto."
+                    example: "Error al eliminar un producto."
+  /api/productos/buscar:
+  /api/productos/categoria/{nombre}:
+  /api/productos/precio/{min-max}:
+  /api/productos/masivo/:
+  /api/productos/upload/:

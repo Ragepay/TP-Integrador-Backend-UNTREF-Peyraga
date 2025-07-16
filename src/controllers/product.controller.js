@@ -144,7 +144,7 @@ const getByCodigo = async (req, res) => {
         const producto = await Product.findOne({ codigo: codigo });
         // Si el producto no existe, se devuelve un error.
         if (!producto) {
-            return res.status(404).json({ error: "El producto no existe." });
+            return res.status(404).json({ mensaje: "El producto no existe." });
         }
         // Mensaje y respuesta exitosa.
         const mensaje = "Producto encontrado correctamente.";
