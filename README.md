@@ -36,15 +36,18 @@ Las dependencias que se utilizan en este proyecto son:
     ```bash
         pnpm dev
 
-5. Crear un usuario con rol ADMIN para usar las rutas protegidas:
+5. Documentación swagger con interaccion en el endpoint:
+   /api/docs
+
+6. Crear un usuario con rol ADMIN para usar las rutas protegidas:
    - Usa Postman, REST Client o similar para hacer un POST a `/api/usuarios/register` con un JSON que incluya `"role": "ADMIN"`.
    - Luego haz login en `/api/usuarios/login` para obtener el token(almacenado en la cookie `token`) que te permitirá acceder a las rutas protegidas.
 
-6. Poblar la base de datos con los datos del archivo JSON seleccionado (en este caso, computación):
+7. Poblar la base de datos con los datos del archivo JSON seleccionado (en este caso, computación):
    - Usa la ruta protegida `POST /api/productos/upload` para subir el archivo JSON y cargar los productos a la base de datos.
+   - Si deseas que sea otro rubro de productos, modificar el codigo manualmente en el endpoint nombrado.
 
-7. Documentación (próximamente disponible en):
-   /api-docs
+8. Probar todos los endpoints desde postman, REST CLIENT o con swagger en el endpoint ya proporcionado.
 
 ---
 

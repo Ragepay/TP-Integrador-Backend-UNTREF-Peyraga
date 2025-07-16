@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node app.js",
 		"dev": "node --watch app.js",
-		"push": "git add . && git commit -m \"feat: documentacion en swagger de endpoints de usuarios.\" && git push"
+		"push": "git add . && git commit -m \"doc: Ultima modificacion del readme para entregar.\" && git push"
 	},
 	"dependencies": {
 		"cookie-parser": "^1.4.7",
