@@ -93,7 +93,7 @@ paths:
 
   /api/usuarios/{id}:
     get:
-      summary: Ver todos los usuarios registrados.
+      summary: Ver un usuario por ID.
       tags:
         - Usuarios
       security:

@@ -37,7 +37,7 @@ app.use(pathHandler); // Debe ser el ultimo, porque recibe rutas no existentes.
 async function ready() {
     await dbConnect();
     console.log(`MODE: ${MODE} | PORT: ${PORT}`);
-    console.log(`http://localhost:${PORT}`);
+    console.log(`Documentacion: http://localhost:${PORT}/api/docs`);
 }
 
 // Manejo de la señal SIGINT (Ctrl+C) para cerrar la conexion a la base de datos.
